@@ -7,6 +7,7 @@ import {
   useEditorInterface,
   ExcalidrawAPIProvider,
   useExcalidrawAPI,
+  Sidebar,
 } from "@excalidraw/excalidraw";
 import { trackEvent } from "@excalidraw/excalidraw/analytics";
 import { getDefaultAppState } from "@excalidraw/excalidraw/appState";
@@ -101,6 +102,7 @@ import Collab, {
   userToFollowAtom,
 } from "./collab/Collab";
 import { AppFooter } from "./components/AppFooter";
+import { FRAME_NAVIGATOR, FrameNavigator } from "./components/FrameNavigator";
 import { AppMainMenu } from "./components/AppMainMenu";
 import { AppWelcomeScreen } from "./components/AppWelcomeScreen";
 import {
@@ -1009,26 +1011,36 @@ const ExcalidrawWrapper = () => {
         theme={editorTheme}
         onThemeChange={setAppTheme}
         renderTopRightUI={(isMobile) => {
-          if (isMobile || !collabAPI || !isCollabAvailable) {
+          if (isMobile) {
             return null;
           }
 
           return (
             <div className="excalidraw-ui-top-right">
-              {excalidrawAPI?.getEditorInterface().formFactor === "desktop" && (
-                <ExcalidrawPlusPromoBanner
-                  isSignedIn={isExcalidrawPlusSignedUser}
-                />
-              )}
+              <Sidebar.Trigger name={FRAME_NAVIGATOR} title="Frame Navigator">
+                Frames
+              </Sidebar.Trigger>
 
-              {collabError.message && <CollabError collabError={collabError} />}
-              <LiveCollaborationTrigger
-                isCollaborating={isCollaborating}
-                onSelect={() =>
-                  setShareDialogState({ isOpen: true, type: "share" })
-                }
-                editorInterface={editorInterface}
-              />
+              {collabAPI && !isCollabDisabled && (
+                <>
+                  {excalidrawAPI?.getEditorInterface().formFactor ===
+                    "desktop" && (
+                    <ExcalidrawPlusPromoBanner
+                      isSignedIn={isExcalidrawPlusSignedUser}
+                    />
+                  )}
+                  {collabError.message && (
+                    <CollabError collabError={collabError} />
+                  )}
+                  <LiveCollaborationTrigger
+                    isCollaborating={isCollaborating}
+                    onSelect={() =>
+                      setShareDialogState({ isOpen: true, type: "share" })
+                    }
+                    editorInterface={editorInterface}
+                  />
+                </>
+              )}
             </div>
           );
         }}
@@ -1074,6 +1086,7 @@ const ExcalidrawWrapper = () => {
             </OverwriteConfirmDialog.Action>
           )}
         </OverwriteConfirmDialog>
+        {excalidrawAPI && <FrameNavigator editor={excalidrawAPI} />}
         <AppFooter onChange={() => excalidrawAPI?.refresh()} />
         {excalidrawAPI && <AIComponents excalidrawAPI={excalidrawAPI} />}
 
