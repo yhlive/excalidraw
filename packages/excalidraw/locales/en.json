@@ -29,6 +29,7 @@
     "delete": "Delete",
     "copyStyles": "Copy styles",
     "pasteStyles": "Paste styles",
+    "selectMatchingShapeStyle": "Select matching shape style",
     "stroke": "Stroke",
     "textColor": "Text color",
     "changeStroke": "Change stroke color",

@@ -24,12 +24,12 @@ export type ActionSource =
 /** if false, the action should be prevented */
 export type ActionResult =
   | {
-      elements?: readonly ExcalidrawElement[] | null;
-      appState?: Partial<AppState> | null;
-      files?: BinaryFiles | null;
-      captureUpdate: CaptureUpdateActionType;
-      replaceFiles?: boolean;
-    }
+    elements?: readonly ExcalidrawElement[] | null;
+    appState?: Partial<AppState> | null;
+    files?: BinaryFiles | null;
+    captureUpdate: CaptureUpdateActionType;
+    replaceFiles?: boolean;
+  }
   | false;
 
 type ActionFn<TData = any> = (
@@ -56,6 +56,7 @@ export type ActionName =
   | "copyStyles"
   | "selectAll"
   | "pasteStyles"
+  | "selectMatchingShapeStyle"
   | "gridMode"
   | "zenMode"
   | "objectsSnapMode"
@@ -165,19 +166,19 @@ export type PanelComponentProps = {
 export interface Action<TData = any> {
   name: ActionName;
   label:
-    | string
-    | ((
-        elements: readonly ExcalidrawElement[],
-        appState: Readonly<UIAppState>,
-        app: AppClassProperties,
-      ) => string);
+  | string
+  | ((
+    elements: readonly ExcalidrawElement[],
+    appState: Readonly<UIAppState>,
+    app: AppClassProperties,
+  ) => string);
   keywords?: string[];
   icon?:
-    | React.ReactNode
-    | ((
-        appState: UIAppState,
-        elements: readonly ExcalidrawElement[],
-      ) => React.ReactNode);
+  | React.ReactNode
+  | ((
+    appState: UIAppState,
+    elements: readonly ExcalidrawElement[],
+  ) => React.ReactNode);
   PanelComponent?: React.FC<PanelComponentProps>;
   perform: ActionFn<TData>;
   keyPriority?: number;
@@ -195,26 +196,26 @@ export interface Action<TData = any> {
   ) => boolean;
   checked?: (appState: Readonly<UIAppState>) => boolean;
   trackEvent:
-    | false
-    | {
-        category:
-          | "toolbar"
-          | "element"
-          | "canvas"
-          | "export"
-          | "history"
-          | "menu"
-          | "collab"
-          | "hyperlink"
-          | "search_menu"
-          | "shape_switch";
-        action?: string;
-        predicate?: (
-          appState: Readonly<AppState>,
-          elements: readonly ExcalidrawElement[],
-          value: any,
-        ) => boolean;
-      };
+  | false
+  | {
+    category:
+    | "toolbar"
+    | "element"
+    | "canvas"
+    | "export"
+    | "history"
+    | "menu"
+    | "collab"
+    | "hyperlink"
+    | "search_menu"
+    | "shape_switch";
+    action?: string;
+    predicate?: (
+      appState: Readonly<AppState>,
+      elements: readonly ExcalidrawElement[],
+      value: any,
+    ) => boolean;
+  };
   /** if set to `true`, allow action to be performed in viewMode.
    *  Defaults to `false` */
   viewMode?: boolean;
